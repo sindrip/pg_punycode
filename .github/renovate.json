@@ -1,0 +1,19 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
+  "osvVulnerabilityAlerts": true,
+  "lockFileMaintenance": { "enabled": true, "automerge": true },
+  "packageRules": [
+    {
+      "description": "Automerge low-risk updates once CI is green",
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "automerge": true
+    },
+    {
+      "description": "The pgrx crates share one exact pin that also selects the bootstrapped cargo-pgrx CLI; they move together and stay human-reviewed",
+      "matchPackageNames": ["pgrx", "pgrx-tests", "pgrx-bench"],
+      "groupName": "pgrx",
+      "automerge": false
+    }
+  ]
+}
