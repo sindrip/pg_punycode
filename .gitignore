@@ -1,0 +1,6 @@
+.DS_Store
+/target
+/.tools
+crates/pg_punycode/tests/pg_regress/results
+crates/pg_punycode/tests/pg_regress/regression.diffs
+crates/pg_punycode/tests/pg_regress/regression.out

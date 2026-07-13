@@ -1,0 +1,39 @@
+-- RFC 3492 sample vectors through SQL
+SELECT punycode_encode('bücher') AS encoded;
+  encoded  
+-----------
+ bcher-kva
+(1 row)
+
+SELECT punycode_encode('London') AS ascii_gets_delimiter;
+ ascii_gets_delimiter 
+----------------------
+ London-
+(1 row)
+
+SELECT punycode_decode('MajiKoi5-783gue6qz075azm5e') AS decoded;
+      decoded       
+--------------------
+ MajiでKoiする5秒前
+(1 row)
+
+SELECT punycode_decode(punycode_encode('日本語')) = '日本語' AS round_trip;
+ round_trip 
+------------
+ t
+(1 row)
+
+-- function flags: strict, immutable, parallel safe
+SELECT proisstrict, provolatile, proparallel
+FROM pg_proc
+WHERE proname IN ('punycode_encode', 'punycode_decode')
+ORDER BY proname;
+ proisstrict | provolatile | proparallel 
+-------------+-------------+-------------
+ t           | i           | s
+ t           | i           | s
+(2 rows)
+
+-- invalid input raises an error
+SELECT punycode_decode('bücher');
+ERROR:  punycode_decode: invalid punycode: "bücher"

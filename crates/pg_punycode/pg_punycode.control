@@ -1,0 +1,6 @@
+comment = 'Punycode (RFC 3492) and IDNA/UTS-46 domain name functions for PostgreSQL'
+default_version = '@CARGO_VERSION@'
+module_pathname = 'pg_punycode'
+relocatable = false
+superuser = true
+trusted = false

@@ -1,0 +1,42 @@
+[workspace]
+resolver = "3"
+members = ["crates/pg_punycode", "xtask"]
+default-members = ["crates/pg_punycode"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.97.0"
+license = "MIT"
+repository = "https://github.com/sindrip/pg_punycode"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+unreachable_pub = "warn"
+
+[workspace.lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+must_use_candidate = "allow"
+unwrap_used = "warn"
+expect_used = "warn"
+
+[workspace.dependencies]
+idna = "1"
+# Exact pin required: xtask installs the matching cargo-pgrx CLI from this entry.
+pgrx = "=0.19.1"
+pgrx-tests = "=0.19.1"
+pgrx-bench = "=0.19.1"
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+toml = "1"
+
+# pgrx extensions require unwind panics; workspace members' profiles are ignored,
+# so these live here.
+[profile.dev]
+panic = "unwind"
+
+[profile.release]
+panic = "unwind"
+opt-level = 3
+lto = "fat"
+codegen-units = 1

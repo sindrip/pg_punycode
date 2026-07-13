@@ -1,0 +1,58 @@
+-- IDNA / UTS-46 domain conversions (WHATWG URL rules)
+SELECT domain_to_ascii('Bücher.DE') AS mapped_and_encoded;
+ mapped_and_encoded 
+--------------------
+ xn--bcher-kva.de
+(1 row)
+
+SELECT domain_to_ascii('中国') AS tld_zhongguo;
+ tld_zhongguo 
+--------------
+ xn--fiqs8s
+(1 row)
+
+SELECT domain_to_ascii('рф') AS tld_rf;
+  tld_rf  
+----------
+ xn--p1ai
+(1 row)
+
+SELECT domain_to_ascii('straße.de') AS non_transitional_eszett;
+ non_transitional_eszett 
+-------------------------
+ xn--strae-oqa.de
+(1 row)
+
+SELECT domain_to_ascii('💩.la') AS emoji;
+    emoji    
+-------------
+ xn--ls8h.la
+(1 row)
+
+SELECT domain_to_ascii('example.com') AS ascii_passthrough;
+ ascii_passthrough 
+-------------------
+ example.com
+(1 row)
+
+SELECT domain_to_unicode('xn--fiqs8s') AS u_label;
+ u_label 
+---------
+ 中国
+(1 row)
+
+SELECT domain_to_unicode('XN--FIQS8S') AS case_insensitive_ace;
+ case_insensitive_ace 
+----------------------
+ 中国
+(1 row)
+
+SELECT domain_to_ascii(domain_to_unicode('xn--mgbaam7a8h')) AS round_trip;
+   round_trip   
+----------------
+ xn--mgbaam7a8h
+(1 row)
+
+-- forbidden ASCII (URL rules) raises an error
+SELECT domain_to_ascii('a b.com');
+ERROR:  domain_to_ascii: invalid domain name: "a b.com"
