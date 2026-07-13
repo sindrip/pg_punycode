@@ -1,16 +1,38 @@
 # pg_punycode
 
 [![CI](https://github.com/sindrip/pg_punycode/actions/workflows/ci.yml/badge.svg)](https://github.com/sindrip/pg_punycode/actions/workflows/ci.yml)
+[![PostgreSQL 13+](https://img.shields.io/badge/PostgreSQL-13+-blue)](#development)
+[![Release](https://img.shields.io/github/v/release/sindrip/pg_punycode)](https://github.com/sindrip/pg_punycode/releases)
+[![License](https://img.shields.io/github/license/sindrip/pg_punycode)](LICENSE)
 
 Punycode (RFC 3492) and IDNA/UTS-46 domain name functions for PostgreSQL,
 written in Rust with [pgrx](https://github.com/pgcentralfoundation/pgrx) and
 backed by the [idna](https://crates.io/crates/idna) crate (the rust-url /
 Firefox implementation).
 
+```sql
+CREATE EXTENSION pg_punycode;
+
+SELECT domain_to_ascii('Bücher.DE');                  -- xn--bcher-kva.de
+SELECT domain_to_unicode('xn--fiqs8s');               -- 中国
+SELECT punycode_encode('bücher');                     -- bcher-kva
+SELECT punycode_decode('MajiKoi5-783gue6qz075azm5e'); -- MajiでKoiする5秒前
+```
+
+## Overview
+
+Encoding happens in the database, so every client sees the same canonical
+form — no per-application punycode libraries to keep in sync. All functions
+are `STRICT`, `IMMUTABLE`, and `PARALLEL SAFE`, so they can back indexes and
+constraints:
+
+```sql
+CREATE INDEX domains_ace_idx ON domains (domain_to_ascii(name));
+```
+
 ## Functions
 
-All functions are `STRICT`, `IMMUTABLE`, and `PARALLEL SAFE`; invalid input
-raises an error.
+Invalid input raises an error.
 
 | Function | Description |
 | --- | --- |
@@ -18,15 +40,6 @@ raises an error.
 | `punycode_decode(text) → text` | Inverse of `punycode_encode`; extended digits are case-insensitive. |
 | `domain_to_ascii(text) → text` | IDNA A-label ("xn--") form of a domain name per UTS-46 with WHATWG URL rules: case-mapped, normalized, validated. |
 | `domain_to_unicode(text) → text` | IDNA U-label (Unicode) form of a domain name per UTS-46. |
-
-```sql
-CREATE EXTENSION pg_punycode;
-
-SELECT punycode_encode('bücher');                     -- bcher-kva
-SELECT punycode_decode('MajiKoi5-783gue6qz075azm5e'); -- MajiでKoiする5秒前
-SELECT domain_to_ascii('Bücher.DE');                  -- xn--bcher-kva.de
-SELECT domain_to_unicode('xn--fiqs8s');               -- 中国
-```
 
 ## Installation
 
