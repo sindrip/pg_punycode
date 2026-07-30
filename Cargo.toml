@@ -23,9 +23,9 @@ expect_used = "warn"
 [workspace.dependencies]
 idna = "1"
 # Exact pin required: xtask installs the matching cargo-pgrx CLI from this entry.
-pgrx = "=0.19.1"
-pgrx-tests = "=0.19.1"
-pgrx-bench = "=0.19.1"
+pgrx = "=0.19.2"
+pgrx-tests = "=0.19.2"
+pgrx-bench = "=0.19.2"
 anyhow = "1"
 clap = { version = "4", features = ["derive"] }
 toml = "1"
